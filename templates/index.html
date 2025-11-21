@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioPatch: Bienestar Natural</title>
+    <!-- RUTA CORREGIDA -->
+    <link rel="icon" type="image/png" href="/static/img/icono.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js para el chat -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Si tienes un style.css externo, descomenta esta línea: -->
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        bio: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a', 
+                            700: '#15803d', 
+                            800: '#166534', 
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ========================================= */
+        /* ESTILOS DEL CHAT Y WIDGET */
+        /* ========================================= */
+        .msg-bot {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            align-self: flex-start;
+            max-width: 85%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .msg-user {
+            background-color: #16a34a;
+            color: white;
+            border-radius: 16px 16px 4px 16px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            align-self: flex-end;
+            max-width: 85%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .msg-bot p { margin: 0; }
+        .msg-bot strong { font-weight: 700; color: #166534; }
+
+        @keyframes pulse-soft {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(22, 163, 74, 0); }
+        }
+        .btn-pulse {
+            animation: pulse-soft 3s infinite;
+        }
+
+        /* ========================================= */
+        /* ESTILOS DEL CARRUSEL INFINITO */
+        /* ========================================= */
+        .scroller {
+            max-width: 100%;
+            overflow: hidden; 
+        }
+        
+        .scroller[data-animated="true"] {
+            overflow: hidden;
+            -webkit-mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+            mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+        }
+
+        .scroller[data-animated="true"] .scroller__inner {
+            width: max-content;
+            flex-wrap: nowrap;
+            animation: scroll var(--_animation-duration, 30s) var(--_animation-direction, forwards) linear infinite;
+        }
+
+        .scroller[data-speed="fast"] { --_animation-duration: 15s; }
+        .scroller[data-speed="normal"] { --_animation-duration: 30s; } 
+        .scroller[data-speed="slow"] { --_animation-duration: 60s; }
+
+        @keyframes scroll {
+            to {
+                transform: translate(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- HEADER PRINCIPAL -->
+    <div class="bg-[#38a169] text-white py-10 text-center relative">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center">
+            <div class="bg-green-800/20 p-3 rounded-2xl mb-4 backdrop-blur-sm">
+                <!-- RUTA CORREGIDA -->
+                <img 
+                    src="/static/img/icono.png" 
+                    alt="Logo de BioPatch" 
+                    onerror="this.onerror=null; this.src='https://placehold.co/80x80/FFFFFF/38a169?text=BIO';" 
+                    class="w-20 h-20 object-contain"
+                >
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight uppercase drop-shadow-sm">
+                BIOPATCH
+            </h1>
+            <p class="text-lg md:text-xl mt-2 font-light text-green-50">
+                Parches naturales y biodegradables para tu bienestar
+            </p>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bg-[#2f855a] text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4">
+            <ul class="flex flex-wrap justify-center md:space-x-10 space-x-4 py-4 text-sm md:text-base font-medium">
+                <li><a href="#hero" class="hover:text-green-200 transition duration-150 py-2 px-1">Inicio</a></li>
+                <li><a href="#features" class="hover:text-green-200 transition duration-150 py-2 px-1">Productos</a></li>
+                <li><a href="#salud" class="hover:text-green-200 transition duration-150 py-2 px-1">Resultados</a></li>
+                <li><a href="#metodologia" class="hover:text-green-200 transition duration-150 py-2 px-1">Compromiso</a></li>
+                <li><a href="#integrantes" class="hover:text-green-200 transition duration-150 py-2 px-1">Nosotros</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO BANNER -->
+    <header id="hero" class="relative h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- RUTA CORREGIDA -->
+            <img 
+                src="/static/img/Fondo.jpg" 
+                alt="Fondo BioPatch" 
+                onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/f0fdf4/16a34a?text=Naturaleza';" 
+                class="w-full h-full object-cover object-center"
+            >
+            <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl px-6 text-center text-white">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight shadow-sm">
+                La Alternativa Natural y Sostenible
+            </h2>
+            <p class="text-lg md:text-xl text-gray-100 mb-8 max-w-2xl mx-auto">
+                Descubre el poder del Aloe Vera y el Eucalipto en un formato innovador y respetuoso con el planeta.
+            </p>
+            <a href="#features" class="inline-block px-8 py-3 bg-white text-bio-700 font-bold rounded-full hover:bg-gray-100 transition transform hover:scale-105 shadow-lg">
+                Ver Catálogo
+            </a>
+        </div>
+    </header>
+
+    <!-- PRODUCTOS -->
+    <section id="features" class="py-20 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <span class="text-bio-600 font-bold tracking-wider uppercase text-sm">Nuestra Colección</span>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Parches BioPatch</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+                <!-- Producto 1 -->
+                <div class="group bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col md:flex-row">
+                    <div class="md:w-1/2 bg-bio-50 flex items-center justify-center p-8 group-hover:bg-bio-100 transition">
+                        <!-- RUTA CORREGIDA -->
+                        <img src="/static/img/paquete_aloevera.png" alt="Aloe Vera" onerror="this.onerror=null; this.src='https://placehold.co/200x250/16a34a/ffffff?text=Aloe+Vera';" class="w-40 h-auto drop-shadow-xl transform group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="p-8 md:w-1/2 flex flex-col justify-center">
+                        <div class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold uppercase tracking-wide mb-3 w-max">Cuidado Facial</div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">BioPatch Aloe Vera</h4>
+                        <p class="text-gray-600 mb-6 text-sm leading-relaxed">Potente hidratante y regenerador. Formulado para calmar irritaciones, reducir el acné y refrescar la piel.</p>
+                    </div>
+                </div>
+
+                <!-- Producto 2 -->
+                <div class="group bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col md:flex-row">
+                    <div class="md:w-1/2 bg-teal-50 flex items-center justify-center p-8 group-hover:bg-teal-100 transition">
+                        <!-- RUTA CORREGIDA -->
+                        <img src="/static/img/paquete_eucaliptoymenta.png" alt="Eucalipto" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0d9488/ffffff?text=Eucalipto';" class="w-40 h-auto drop-shadow-xl transform group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="p-8 md:w-1/2 flex flex-col justify-center">
+                        <div class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold uppercase tracking-wide mb-3 w-max">Alivio Muscular</div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-3">Eucalipto & Llantén</h4>
+                        <p class="text-gray-600 mb-6 text-sm leading-relaxed">Acción antiinflamatoria profunda. Ideal para dolores musculares, golpes o congestión respiratoria.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTADOS (SPLIT VISUAL) -->
+    <section id="salud" class="bg-gray-50 overflow-hidden">
+        
+        <!-- BLOQUE 1 -->
+        <div class="flex flex-col lg:flex-row min-h-[500px]">
+            <div class="lg:w-1/2 relative min-h-[300px]">
+                <!-- RUTA CORREGIDA -->
+                <img 
+                    src="/static/img/foto casa.jpg" 
+                    alt="Estilo de vida natural" 
+                    onerror="this.onerror=null; this.src='https://placehold.co/800x800/e2e8f0/64748b?text=Estilo+de+Vida';" 
+                    class="absolute inset-0 w-full h-full object-cover"
+                >
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 lg:to-transparent"></div>
+            </div>
+            
+            <div class="lg:w-1/2 flex items-center justify-center p-10 lg:p-20 bg-white">
+                <div class="max-w-md">
+                    <div class="w-16 h-2 bg-bio-600 mb-6"></div>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+                        "La naturaleza no se apresura, sin embargo, todo se logra."
+                    </h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Nuestros parches no son solo un producto, son una invitación a reconectar con los ciclos naturales de tu cuerpo. Sin químicos agresivos, sin plásticos de un solo uso.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-bold text-bio-700 bg-bio-100 px-3 py-1 rounded-full">100% Biodegradable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOQUE 2 -->
+        <div class="flex flex-col lg:flex-row-reverse min-h-[500px]">
+            <div class="lg:w-1/2 relative min-h-[300px]">
+                <!-- RUTA CORREGIDA -->
+                <img 
+                    src="/static/img/foto spa.jpg" 
+                    alt="Alivio muscular y efectividad" 
+                    onerror="this.onerror=null; this.src='https://placehold.co/800x800/166534/ffffff?text=Alivio+Muscular';" 
+                    class="absolute inset-0 w-full h-full object-cover"
+                >
+                <div class="absolute inset-0 bg-gradient-to-l from-transparent to-black/20 lg:to-transparent"></div>
+            </div>
+            
+            <div class="lg:w-1/2 flex items-center justify-center p-10 lg:p-20 bg-gray-100">
+                <div class="max-w-md">
+                    <div class="w-16 h-2 bg-teal-600 mb-6"></div>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+                        Eficacia Focalizada y Rápida Absorción.
+                    </h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Gracias a nuestra tecnología de liberación controlada, los ingredientes activos penetran directamente en la zona afectada, brindando alivio donde más lo necesitas sin afectar el resto de tu organismo.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700 font-medium">Alivio muscular prolongado</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-gray-700 font-medium">Hipoalergénico y seguro</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METODOLOGÍA -->
+    <section id="metodologia" class="pt-20 pb-10 bg-[#1a4731] text-white relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
+            <h3 class="text-3xl md:text-4xl font-bold mb-4">Compromiso Cero Residuos</h3>
+            <p class="text-green-200 mb-12 max-w-2xl mx-auto text-lg">Innovación biotecnológica aplicada a la ecología.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Cards Metodología -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 text-left flex gap-5">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-bio-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Bioplástico de Maíz</h4>
+                        <p class="text-gray-300 leading-relaxed text-sm">Sustituimos el plástico por una matriz polimérica hecha de almidón de maíz, glicerina y vinagre.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 text-left flex gap-5">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-bio-500 rounded-lg flex items-center justify-center text-white shadow-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Ciclo Circular</h4>
+                        <p class="text-gray-300 leading-relaxed text-sm">Al terminar su vida útil, el parche se convierte en abono orgánico. Nutrientes, no basura.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- CARRUSEL INFINITO -->
+    <!-- ========================================== -->
+    <section id="carrusel-infinito" class="py-0 bg-[#1a4731] border-t border-white/5 overflow-hidden">
+        <div class="relative w-full">
+            <div class="scroller" data-speed="normal">
+                <ul class="tag-list scroller__inner flex gap-0 items-center">
+                    <!-- IMÁGENES DEL CARRUSEL (RUTAS CORREGIDAS) -->
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im1.png" alt="Foto 1" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im2.png" alt="Foto 2" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im3.png" alt="Foto 3" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im4.png" alt="Foto 4" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im5.png" alt="Foto 5" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im6.png" alt="Foto 6" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im7.png" alt="Foto 7" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im8.png" alt="Foto 8" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                    <li class="flex-shrink-0">
+                        <img src="/static/img/carrusel/im9.png" alt="Foto 9" class="h-40 md:h-64 w-auto object-cover" onerror="this.style.display='none'">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- EQUIPO -->
+    <section id="integrantes" class="py-20 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h3 class="text-3xl font-bold mb-12 text-gray-800">Mentes detrás de BioPatch</h3>
+            <div class="flex flex-wrap justify-center gap-8">
+                <!-- Integrantes (RUTAS CORREGIDAS) -->
+                <div class="group w-40 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-bio-400 to-blue-400 mb-4 shadow-lg group-hover:shadow-bio-300/50 transition duration-300">
+                        <img src="/static/img/img valentino.png" alt="Valentino" onerror="this.onerror=null; this.src='https://placehold.co/150x150/16a34a/ffffff?text=VE';" class="w-full h-full object-cover rounded-full border-4 border-white">
+                    </div>
+                    <h5 class="font-bold text-gray-900 text-lg">Valentino E.</h5>
+                    <span class="text-xs font-semibold text-bio-600 uppercase tracking-wide">Mera Ruiz</span>
+                </div>
+                <div class="group w-40 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-bio-400 to-blue-400 mb-4 shadow-lg group-hover:shadow-bio-300/50 transition duration-300">
+                        <img src="/static/img/img mia.png" alt="Mia" onerror="this.onerror=null; this.src='https://placehold.co/150x150/16a34a/ffffff?text=ML';" class="w-full h-full object-cover rounded-full border-4 border-white">
+                    </div>
+                    <h5 class="font-bold text-gray-900 text-lg">Mia L.</h5>
+                    <span class="text-xs font-semibold text-bio-600 uppercase tracking-wide">Martínez León</span>
+                </div>
+                <div class="group w-40 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-bio-400 to-blue-400 mb-4 shadow-lg group-hover:shadow-bio-300/50 transition duration-300">
+                        <img src="/static/img/img gisell.png" alt="Gisell" onerror="this.onerror=null; this.src='https://placehold.co/150x150/16a34a/ffffff?text=GF';" class="w-full h-full object-cover rounded-full border-4 border-white">
+                    </div>
+                    <h5 class="font-bold text-gray-900 text-lg">Gisell F.</h5>
+                    <span class="text-xs font-semibold text-bio-600 uppercase tracking-wide">Espinoza P.</span>
+                </div>
+                <div class="group w-40 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-bio-400 to-blue-400 mb-4 shadow-lg group-hover:shadow-bio-300/50 transition duration-300">
+                        <img src="/static/img/img benjamin.png" alt="Benjamin" onerror="this.onerror=null; this.src='https://placehold.co/150x150/16a34a/ffffff?text=BA';" class="w-full h-full object-cover rounded-full border-4 border-white">
+                    </div>
+                    <h5 class="font-bold text-gray-900 text-lg">Benjamín A.</h5>
+                    <span class="text-xs font-semibold text-bio-600 uppercase tracking-wide">López Tiburcio</span>
+                </div>
+                <div class="group w-40 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-bio-400 to-blue-400 mb-4 shadow-lg group-hover:shadow-bio-300/50 transition duration-300">
+                        <img src="/static/img/img piero.png" alt="Piero" onerror="this.onerror=null; this.src='https://placehold.co/150x150/16a34a/ffffff?text=PE';" class="w-full h-full object-cover rounded-full border-4 border-white">
+                    </div>
+                    <h5 class="font-bold text-gray-900 text-lg">Piero E.</h5>
+                    <span class="text-xs font-semibold text-bio-600 uppercase tracking-wide">Reyna Cotos</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-400 py-12 text-sm">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <span class="text-2xl">🌿</span>
+                    <span class="text-white font-bold text-xl">BioPatch</span>
+                </div>
+                <p>&copy; 2024 Proyecto de Emprendimiento Sostenible.</p>
+                <p class="text-xs mt-1 text-gray-600">Hecho con dedicación por estudiantes.</p>
+            </div>
+            
+            <div class="flex gap-6 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition duration-500">
+                <!-- RUTAS CORREGIDAS -->
+                <img src="/static/img/escudo1.png" alt="Institución 1" onerror="this.onerror=null; this.src='https://placehold.co/50x50/333/666?text=E1';" class="h-12 w-auto">
+                <img src="/static/img/escudo2.png" alt="Institución 2" onerror="this.onerror=null; this.src='https://placehold.co/50x50/333/666?text=E2';" class="h-12 w-auto">
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHAT WIDGET -->
+    <div id="chat-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div id="chat-window" class="hidden mb-4 bg-white rounded-2xl shadow-2xl w-[340px] h-[500px] flex flex-col overflow-hidden border border-gray-100 transition-all duration-300 ease-out transform origin-bottom-right scale-95 opacity-0 ring-1 ring-black/5">
+            <header class="bg-gradient-to-r from-bio-700 to-bio-600 text-white p-4 flex justify-between items-center shadow-md">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-1.5 rounded-full">
+                        <span>🤖</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm leading-tight">Asistente Patchy</h3>
+                        <div class="flex items-center gap-1">
+                            <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span>
+                            <span class="text-[10px] text-green-100 font-medium">En línea</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="chat-close" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full p-1.5 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </header>
+
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-50 flex flex-col gap-2 custom-scrollbar">
+            </div>
+
+            <div id="loading-indicator" class="hidden px-5 py-2 text-xs text-gray-400 bg-gray-50 flex items-center gap-2">
+                <div class="flex space-x-1">
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-75"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+                </div>
+                <span>Patchy está pensando...</span>
+            </div>
+
+            <form id="chat-form" class="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
+                <input type="text" id="chat-input" placeholder="Escribe tu duda aquí..." class="flex-grow py-2.5 px-4 bg-gray-100 border-transparent rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-bio-500 focus:outline-none transition-all placeholder-gray-400 text-gray-700" autocomplete="off">
+                <button type="submit" id="chat-send" class="bg-bio-600 text-white p-2.5 rounded-full hover:bg-bio-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </div>
+
+        <button id="chat-toggle" class="btn-pulse bg-gradient-to-br from-bio-600 to-bio-700 text-white p-0 rounded-full shadow-2xl hover:scale-110 transition duration-300 focus:outline-none flex items-center justify-center w-16 h-16 border-4 border-white z-50">
+            <svg id="toggle-icon-open" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg id="toggle-icon-close" class="w-8 h-8 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- SCRIPT DEL CARRUSEL (INCRUSTADO) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollers = document.querySelectorAll(".scroller");
+            
+            if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                addAnimation();
+            }
+            
+            function addAnimation() {
+                scrollers.forEach((scroller) => {
+                    scroller.setAttribute("data-animated", true);
+                    
+                    const scrollerInner = scroller.querySelector(".scroller__inner");
+                    const scrollerContent = Array.from(scrollerInner.children);
+                    
+                    scrollerContent.forEach((item) => {
+                        const duplicatedItem = item.cloneNode(true);
+                        duplicatedItem.setAttribute("aria-hidden", true);
+                        scrollerInner.appendChild(duplicatedItem);
+                    });
+                });
+            }
+        });
+    </script>
+
+    <!-- SCRIPT EXTERNO (CHAT) - RUTA CORREGIDA -->
+    <script src="/static/script.js"></script>
+</body>
+</html>

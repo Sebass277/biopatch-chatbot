@@ -1,0 +1,10 @@
+# Archivos de clave y secretos
+GEMINI_API_KEY.txt
+
+# Entorno virtual de Python (si tienes uno)
+venv/
+*.env
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
